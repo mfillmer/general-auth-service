@@ -7,10 +7,7 @@ db = SQLAlchemy()
 Base = db.Model
 
 
-class Request(Base):
-    __tablename__ = 'requests'
+class User(Base):
     uuid = Column(String(36), primary_key=True, default=lambda: str(uuid4()))
-    timestamp = Column(BIGINT, default=lambda: str(int(time()*1000)))
-
-    def to_dict(self):
-        return dict(uuid=self.uuid, timestamp=self.timestamp)
+    mail = Column(String(300), unique=True, nullable=False)
+    password_hash = Column(String(512), nullable=False)

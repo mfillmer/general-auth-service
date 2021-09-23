@@ -6,6 +6,7 @@ API-Users can:
 - register a new account
 - verify their e-mail
 - log into existing accounts
+- logout, invalidate token
 - refresh their token
 - delete their account
 - update their password
@@ -16,6 +17,7 @@ CLI-Users can:
 - create permissions
 - delete permissions
 - create roles
+- set a default role for new users
 - delete roles
 - group permissions into roles
 - set roles on other accounts
