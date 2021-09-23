@@ -4,13 +4,12 @@
 
 API-Users can:
 - register a new account
-- verify their e-mail
+- verify their mail with token
 - log into existing accounts
 - logout, invalidate token
 - refresh their token
 - delete their account
 - update their password
-- send themselve a link for resetting their password by mail
 
 CLI-Users can:
 - view a report of registered users
