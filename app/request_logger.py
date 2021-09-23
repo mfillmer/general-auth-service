@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, jsonify
 from app.models import Request, db
 
 
@@ -12,3 +12,10 @@ def healthcheck():
     db.session.commit()
 
     return 'ok', 200
+
+
+@bp.route('/print')
+def report():
+    items = Request.query.all()
+
+    return jsonify(list(map(lambda item: item.to_dict(), items)))
