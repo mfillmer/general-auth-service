@@ -1,0 +1,41 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "run api",
+            "type": "shell",
+            "options": {
+                "env": {
+                    "FLASK_ENV": "development",
+                    "FLASK_APP": "app",
+                    "FLASK_RUN_PORT": "5000"
+                }
+            },
+            "command": "cd ${workspaceFolder} && python -m flask run",
+            "problemMatcher": []
+        },
+        {
+            "label": "run pytest on api",
+            "type": "shell",
+            "options": {
+                "env": {}
+            },
+            "command": "cd ${workspaceFolder} && python -m pytest",
+            "problemMatcher": []
+        },
+        {
+            "label": "setup api database",
+            "type": "shell",
+            "options": {
+                "env": {
+                    "FLASK_ENV": "development",
+                    "FLASK_APP": "app",
+                }
+            },
+            "command": "cd ${workspaceFolder} && python -m flask init-db",
+            "problemMatcher": []
+        }
+    ]
+}
