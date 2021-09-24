@@ -13,7 +13,10 @@ def is_mail_valid(mail: str) -> bool:
 
 @bp.route('/register', methods=['POST'])
 def register():
-    data = request.values
+    if not request.is_json:
+        return 'json header not specified', 400
+
+    data = request.json
     mail = data.get('mail')
     password = data.get('password')
 
