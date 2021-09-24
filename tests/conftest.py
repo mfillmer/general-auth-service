@@ -10,7 +10,9 @@ def client():
     app = create_app()
 
     with app.test_client() as client:
-        with app.app_context():
+        with app.app_context() as context:
             db.create_all()
-        yield client
-        db.drop_all()
+            client.context = context
+            client.db = db
+            yield client
+            db.drop_all()

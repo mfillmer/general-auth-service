@@ -1,17 +1,20 @@
 from flask import Flask
 from app.models import db
 from app.util import init_db
-from app import register
+from app import register, verify
+from flask_jwt_extended import JWTManager
 
 
 def setup_app(app: Flask):
     app.config.from_pyfile('./config.py')
     app.add_url_rule('/', view_func=lambda: ('ok', 200))
     app.register_blueprint(register.bp)
+    app.register_blueprint(verify.bp)
 
 
 def init_modules(app: Flask):
     db.init_app(app)
+    JWTManager(app)
 
 
 def setup_cli(app: Flask):
