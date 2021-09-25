@@ -1,7 +1,7 @@
 from flask import Flask
 from app.models import db
 from app.util import init_db
-from app import register, verify
+from app import register, verify, login
 from flask_jwt_extended import JWTManager
 
 
@@ -10,6 +10,7 @@ def setup_app(app: Flask):
     app.add_url_rule('/', view_func=lambda: ('ok', 200))
     app.register_blueprint(register.bp)
     app.register_blueprint(verify.bp)
+    app.register_blueprint(login.bp)
 
 
 def init_modules(app: Flask):

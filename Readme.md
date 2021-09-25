@@ -6,8 +6,8 @@ API-Users can:
 - register a new account
 - verify their mail with token
 - log into existing accounts
-- logout, invalidate token
 - refresh their token
+- logout, invalidate token
 - delete their account
 - update their password
 
