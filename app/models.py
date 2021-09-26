@@ -12,3 +12,7 @@ class User(Base):
     mail = Column(String(300), unique=True, nullable=False)
     password_hash = Column(String(512), nullable=False)
     is_confirmed = Column(Boolean, default=False)
+
+
+class RevokedToken(Base):
+    jti = Column(String(36), primary_key=True)
