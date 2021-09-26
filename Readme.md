@@ -10,6 +10,7 @@ API-Users can:
 - logout, invalidate token
 - delete their account
 - update their password
+- update their mail
 
 CLI-Users can:
 - view a report of registered users

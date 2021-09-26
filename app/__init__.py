@@ -1,7 +1,7 @@
 from flask import Flask
 from app.models import db
 from app.util import init_db
-from app import register, verify, login, logout
+from app import register, verify, login, logout, account
 from flask_jwt_extended import JWTManager
 
 
@@ -12,6 +12,7 @@ def setup_app(app: Flask):
     app.register_blueprint(verify.bp)
     app.register_blueprint(login.bp)
     app.register_blueprint(logout.bp)
+    app.register_blueprint(account.bp)
 
 
 def init_modules(app: Flask):
