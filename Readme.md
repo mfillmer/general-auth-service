@@ -12,7 +12,7 @@ API-Users can:
 - update their password
 
 CLI-Users can:
-- view a report of registered users
+- view a report of registered users (json/csv)
 - create permissions
 - delete permissions
 - create roles
