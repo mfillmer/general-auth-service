@@ -8,15 +8,31 @@ from app import create_app, db
 
 
 @pytest.fixture
-def client():
+def app():
     os.environ['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
     app = create_app()
+
+    yield app
+
+
+@pytest.fixture
+def context(app):
+    yield app.app_context()
+
+
+@pytest.fixture
+def cli_runner(app):
+    yield app.test_cli_runner()
+
+
+@pytest.fixture
+def client(app, context):
 
     with app.test_client() as client:
         with app.app_context() as context:
             db.create_all()
-            client.context = context
             client.db = db
+            client.context = context
             yield client
             db.drop_all()
 
