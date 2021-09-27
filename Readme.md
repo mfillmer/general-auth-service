@@ -22,3 +22,5 @@ CLI-Users can:
 - set roles on other accounts
 
 The Service is protected against CRSF and XSS Attacks by duplicated token authorization
+
+tests only cover user-facing functions like api and cli
