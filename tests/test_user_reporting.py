@@ -15,4 +15,10 @@ def test_prints_list_of_users_as_json(cli_runner: FlaskCliRunner, user):
 
 
 def test_prints_list_of_users_as_csv(cli_runner: FlaskCliRunner, user):
-    pass
+    result = cli_runner.invoke(print_users, ['--csv'])
+
+    header = 'uuid;mail;is_confirmed\n'
+    row = f'{user.uuid};{user.mail};{user.is_confirmed}\n'
+
+    assert result.output is not None
+    assert result.output == header + row
