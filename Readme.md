@@ -14,6 +14,7 @@ API-Users can:
 CLI-Users can:
 - view a report of registered users (json/csv)
 - create permissions
+- list permissions
 - delete permissions
 - create roles
 - set a default role for new users
