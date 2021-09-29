@@ -11,6 +11,7 @@ class User(Base):
     uuid = Column(String(36), primary_key=True, default=lambda: str(uuid4()))
     mail = Column(String(300), unique=True, nullable=False)
     password_hash = Column(String(512), nullable=False)
+    timestamp = Column(BigInteger, default=lambda: str(int(time()*1000)))
     is_confirmed = Column(Boolean, default=False)
 
 

@@ -21,7 +21,7 @@ def map_model_to_csv_row(model_dict, keys=[]):
 
 
 def map_model_list_to_csv(model_dicts):
-    cols = ['uuid', 'mail', 'is_confirmed']
+    cols = ['uuid', 'mail', 'is_confirmed', 'timestamp']
     def to_row(dict): return map_model_to_csv_row(dict, cols)
     header = ';'.join(cols)
     rows = list(map(to_row, model_dicts))
