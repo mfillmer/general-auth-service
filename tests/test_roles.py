@@ -1,5 +1,5 @@
 from app.models import Role
-from app.role import create_role, delete_roles, print_roles
+from app.role import create_role, delete_roles, print_roles, set_permissions_on_role
 import json
 
 
@@ -49,5 +49,19 @@ def test_set_roles_on_user():
     pass
 
 
-def test_set_permissions_on_role():
-    pass
+def test_set_permissions_on_role(cli_runner, permissions, roles, context):
+    all_perms = [perm.name for perm in permissions]
+    role_name = roles[0].name
+    result = cli_runner.invoke(set_permissions_on_role, [
+                               role_name, *all_perms])
+
+    assert result.exit_code == 0
+
+    with context:
+        role = Role.query.get(role_name)
+        assert role.permissions is not None
+        assert len(role.permissions) == len(permissions)
+        role_perms = [perm.name for perm in role.permissions]
+
+        for perm in all_perms:
+            assert perm in role_perms
