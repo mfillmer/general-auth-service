@@ -1,4 +1,4 @@
-from app.models import Role
+from app.models import Role, User
 from app.role import create_role, delete_roles, print_roles, set_default_role, set_permissions_on_role
 import json
 
@@ -49,7 +49,7 @@ def test_set_roles_on_user():
     pass
 
 
-def test_set_default_role(cli_runner, roles, context):
+def test_set_default_role(cli_runner, roles, context, user):
     roles = [Role(name=f'test {index}') for index in range(1, 4)]
     new_default_role = roles[1].name
 
@@ -66,6 +66,11 @@ def test_set_default_role(cli_runner, roles, context):
 
         assert default.is_default
         assert len(all_defaults) == 1
+
+        new_user = User(mail='tst@com.test', password_hash='asdf')
+        cli_runner.db.session.add(new_user)
+        cli_runner.db.session.commit()
+        assert new_user.role.name == new_default_role
 
 
 def test_set_permissions_on_role(cli_runner, permissions, roles, context):
