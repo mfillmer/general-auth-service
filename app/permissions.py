@@ -31,3 +31,13 @@ def print_permissions(csv):
         print(*list, sep='\n')
     else:
         print(json.dumps(list))
+
+
+@click.command('delete-permission')
+@click.argument('permissions', required=True, nargs=-1)
+@with_appcontext
+def delete_permission(permissions):
+    for permission in permissions:
+        Permission.query.filter_by(name=permission).delete()
+
+    db.session.commit()
