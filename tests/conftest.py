@@ -46,14 +46,24 @@ def user(client):
         db = client.db
         user = User(mail='user@test.com',
                     password_hash=generate_password_hash('test'))
-        perm = Permission(name='test')
         db.session.add(user)
-        db.session.add(perm)
         db.session.commit()
         yield user
 
 
 @pytest.fixture
+def permissions(client):
+    with client.context:
+        db = client.db
+        def to_model(index): return Permission(name=f'test {index}')
+        permissions = list(map(to_model, range(5)))
+        db.session.add_all(permissions)
+        db.session.commit()
+
+        yield permissions
+
+
+@ pytest.fixture
 def token(client, user):
     with client.context:
         token = create_access_token(user.uuid)
