@@ -25,7 +25,10 @@ def cli_runner(app):
     with app.app_context():
         db.create_all()
         db.drop_all()
-    yield app.test_cli_runner()
+        cli_runner = app.test_cli_runner()
+        cli_runner.db = db
+
+        yield cli_runner
 
 
 @pytest.fixture
@@ -67,7 +70,7 @@ def permissions(client):
 def roles(client):
     with client.context:
         db = client.db
-        def to_model(index): return Role(name=f'test {index}')
+        def to_model(index): return Role(name=f'test {index}', is_default=True)
         roles = list(map(to_model, range(1)))
         db.session.add_all(roles)
         db.session.commit()

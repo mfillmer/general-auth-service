@@ -1,5 +1,5 @@
 from app.models import Role
-from app.role import create_role, delete_roles, print_roles, set_permissions_on_role
+from app.role import create_role, delete_roles, print_roles, set_default_role, set_permissions_on_role
 import json
 
 
@@ -47,6 +47,25 @@ def test_delete_roles(cli_runner, roles):
 
 def test_set_roles_on_user():
     pass
+
+
+def test_set_default_role(cli_runner, roles, context):
+    roles = [Role(name=f'test {index}') for index in range(1, 4)]
+    new_default_role = roles[1].name
+
+    with context:
+        cli_runner.db.session.add_all(roles)
+        cli_runner.db.session.commit()
+
+        result = cli_runner.invoke(set_default_role, [new_default_role])
+
+        assert result.exit_code == 0
+
+        default = Role.query.get(new_default_role)
+        all_defaults = Role.query.filter_by(is_default=True).all()
+
+        assert default.is_default
+        assert len(all_defaults) == 1
 
 
 def test_set_permissions_on_role(cli_runner, permissions, roles, context):

@@ -30,6 +30,7 @@ class Role(Base):
     name = Column(String(300), primary_key=True)
     perms = relationship('PermissionOnRole', uselist=True)
     permissions = association_proxy('perms', 'permission')
+    is_default = Column(Boolean, default=False)
 
 
 class PermissionOnRole(Base):

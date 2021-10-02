@@ -47,3 +47,16 @@ def set_permissions_on_role(role, permissions):
         role=role, perm=permission) for permission in permissions]
     db.session.add_all(perms_on_role)
     db.session.commit()
+
+
+@click.command('set-default-role')
+@click.argument('role', required=True)
+@with_appcontext
+def set_default_role(role):
+    role = Role.query.get(role)
+
+    if role is not None:
+        Role.query.update(values=dict(is_default=False))
+
+        role.is_default = True
+        db.session.commit()
