@@ -21,3 +21,7 @@ class RevokedToken(Base):
 
 class Permission(Base):
     name = Column(String(300), primary_key=True)
+
+
+class Role(Base):
+    name = Column(String(300), primary_key=True)

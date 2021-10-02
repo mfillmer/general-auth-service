@@ -1,4 +1,4 @@
-from app.permissions import create_permission
+from app.permissions import create_permissions, delete_permissions, print_permissions
 from app.users import print_users
 from flask import Flask
 from app.models import db
@@ -26,7 +26,9 @@ def init_modules(app: Flask):
 def setup_cli(app: Flask):
     app.cli.add_command(init_db)
     app.cli.add_command(print_users)
-    app.cli.add_command(create_permission)
+    app.cli.add_command(create_permissions)
+    app.cli.add_command(print_permissions)
+    app.cli.add_command(delete_permissions)
 
 
 def create_app():

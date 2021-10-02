@@ -7,7 +7,7 @@ import json
 @click.command('add-permission')
 @click.argument('permission', required=True, nargs=-1)
 @with_appcontext
-def create_permission(permission):
+def create_permissions(permission):
 
     for item in permission:
         db.session.add(Permission(name=item))
@@ -36,7 +36,7 @@ def print_permissions(csv):
 @click.command('delete-permission')
 @click.argument('permissions', required=True, nargs=-1)
 @with_appcontext
-def delete_permission(permissions):
+def delete_permissions(permissions):
     for permission in permissions:
         Permission.query.filter_by(name=permission).delete()
 

@@ -1,6 +1,6 @@
 from flask_jwt_extended.utils import create_access_token
 from werkzeug.security import generate_password_hash
-from app.models import User, Permission
+from app.models import User, Permission, Role
 import pytest
 import os
 
@@ -61,6 +61,18 @@ def permissions(client):
         db.session.commit()
 
         yield permissions
+
+
+@pytest.fixture
+def roles(client):
+    with client.context:
+        db = client.db
+        def to_model(index): return Role(name=f'test {index}')
+        roles = list(map(to_model, range(1)))
+        db.session.add_all(roles)
+        db.session.commit()
+
+        yield roles
 
 
 @ pytest.fixture
