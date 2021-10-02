@@ -17,10 +17,11 @@ CLI-Users can:
 - list permissions
 - delete permissions
 - create roles
-- set a default role for new users
+- list roles
 - delete roles
+- set a default role for new users
 - group permissions into roles
-- set roles on other accounts
+- set roles on user
 
 The Service is protected against CRSF and XSS Attacks by duplicated token authorization
 
