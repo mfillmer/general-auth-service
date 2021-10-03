@@ -19,6 +19,7 @@ class User(Base):
     role = relationship('Role')
     role_name = Column(String(300), ForeignKey(
         'role.name'), default=lambda: Role.get_default())
+    permissions = association_proxy('role', 'permission')
 
 
 class RevokedToken(Base):
