@@ -3,12 +3,12 @@ from flask import Flask
 from flask_jwt_extended import create_access_token
 
 
-def test_token_is_verified(client: Flask):
+def test_token_is_verified(client: Flask, db):
     user = User(mail='user@test.com', password_hash='test')
 
     with client.context:
-        client.db.session.add(user)
-        client.db.session.commit()
+        db.session.add(user)
+        db.session.commit()
         valid_token = create_access_token(
             identity=user.uuid, additional_claims=dict(verify_mail=True))
         token_without_claim = create_access_token(

@@ -2,7 +2,7 @@ import json
 import click
 from flask.cli import with_appcontext
 
-from app.models import PermissionOnRole, Role, db
+from app.models import PermissionOnRole, Role, User, db
 
 
 @click.command('create-role')
@@ -60,3 +60,14 @@ def set_default_role(role):
 
         role.is_default = True
         db.session.commit()
+
+
+@click.command('set-user-role')
+@click.argument('user', required=True)
+@click.argument('role', required=True)
+@with_appcontext
+def set_user_role(user, role):
+    user = User.query.filter_by(mail=user).first_or_404()
+    user.role_name = role
+
+    db.session.commit()

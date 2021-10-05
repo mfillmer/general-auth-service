@@ -16,7 +16,7 @@ class User(Base):
     password_hash = Column(String(512), nullable=False)
     timestamp = Column(BigInteger, default=lambda: str(int(time()*1000)))
     is_confirmed = Column(Boolean, default=False)
-    role = relationship('Role')
+    role = relationship('Role', backref='users')
     role_name = Column(String(300), ForeignKey(
         'role.name'), default=lambda: Role.get_default())
     permissions = association_proxy('role', 'permission')
@@ -35,7 +35,6 @@ class Role(Base):
     perms = relationship('PermissionOnRole', uselist=True)
     permissions = association_proxy('perms', 'permission')
     is_default = Column(Boolean, default=False)
-    users = relationship('User', uselist=True)
 
     def get_default():
         default = Role.query.filter_by(is_default=True).first()

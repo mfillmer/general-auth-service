@@ -1,5 +1,5 @@
-from app.models import Role, User
-from app.role import create_role, delete_roles, print_roles, set_default_role, set_permissions_on_role
+from app.models import Permission, PermissionOnRole, Role, User
+from app.role import create_role, delete_roles, print_roles, set_default_role, set_permissions_on_role, set_user_role
 import json
 
 
@@ -45,17 +45,13 @@ def test_delete_roles(cli_runner, roles):
     assert len(roles_in_db) == 0
 
 
-def test_set_roles_on_user():
-    pass
-
-
-def test_set_default_role(cli_runner, roles, context, user):
+def test_set_default_role(cli_runner, roles, context, user, db):
     roles = [Role(name=f'test {index}') for index in range(1, 4)]
     new_default_role = roles[1].name
 
     with context:
-        cli_runner.db.session.add_all(roles)
-        cli_runner.db.session.commit()
+        db.session.add_all(roles)
+        db.session.commit()
 
         result = cli_runner.invoke(set_default_role, [new_default_role])
 
@@ -68,8 +64,8 @@ def test_set_default_role(cli_runner, roles, context, user):
         assert len(all_defaults) == 1
 
         new_user = User(mail='tst@com.test', password_hash='asdf')
-        cli_runner.db.session.add(new_user)
-        cli_runner.db.session.commit()
+        db.session.add(new_user)
+        db.session.commit()
         assert new_user.role.name == new_default_role
 
 
@@ -89,3 +85,25 @@ def test_set_permissions_on_role(cli_runner, permissions, roles, context):
 
         for perm in all_perms:
             assert perm in role_perms
+
+
+def test_set_role_on_user(cli_runner, permissions, user, roles, context, db):
+    role = Role(name=f'temp role')
+    permissions = [Permission(name=f'temp {i}') for i in range(5)]
+
+    with context:
+        db.session.add_all([role, *permissions])
+        db.session.commit()
+        db.session.add_all(
+            [PermissionOnRole(role=role.name, perm=perm.name)
+             for perm in permissions]
+        )
+        db.session.commit()
+
+        assert role.permissions == permissions
+
+        result = cli_runner.invoke(set_user_role, [user.mail, role.name])
+
+        user = db.session.query(User).first()
+        assert result.exit_code == 0
+        assert user.role_name == role.name

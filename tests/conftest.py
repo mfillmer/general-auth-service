@@ -4,15 +4,22 @@ from app.models import User, Permission, Role
 import pytest
 import os
 
-from app import create_app, db
+from app import create_app, db as db_instance
 
 
 @pytest.fixture
 def app():
     os.environ['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
     app = create_app()
-
     yield app
+
+
+@pytest.fixture
+def db(context):
+    with context:
+        db_instance.create_all()
+        yield db_instance
+        db_instance.drop_all()
 
 
 @pytest.fixture
@@ -21,32 +28,23 @@ def context(app):
 
 
 @pytest.fixture
-def cli_runner(app):
+def cli_runner(app, db):
     with app.app_context():
-        db.create_all()
-        db.drop_all()
         cli_runner = app.test_cli_runner()
-        cli_runner.db = db
-
         yield cli_runner
 
 
 @pytest.fixture
-def client(app, context):
-
+def client(app, context, db):
     with app.test_client() as client:
         with context:
-            db.create_all()
-            client.db = db
             client.context = context
             yield client
-            db.drop_all()
 
 
 @pytest.fixture
-def user(client):
-    with client.context:
-        db = client.db
+def user(context, db):
+    with context:
         user = User(mail='user@test.com',
                     password_hash=generate_password_hash('test'))
         db.session.add(user)
@@ -55,9 +53,8 @@ def user(client):
 
 
 @pytest.fixture
-def permissions(client):
+def permissions(client, db):
     with client.context:
-        db = client.db
         def to_model(index): return Permission(name=f'test {index}')
         permissions = list(map(to_model, range(5)))
         db.session.add_all(permissions)
@@ -67,9 +64,8 @@ def permissions(client):
 
 
 @pytest.fixture
-def roles(client):
+def roles(client, db):
     with client.context:
-        db = client.db
         def to_model(index): return Role(name=f'test {index}', is_default=True)
         roles = list(map(to_model, range(1)))
         db.session.add_all(roles)
@@ -78,7 +74,7 @@ def roles(client):
         yield roles
 
 
-@ pytest.fixture
+@pytest.fixture
 def token(client, user):
     with client.context:
         token = create_access_token(user.uuid)
