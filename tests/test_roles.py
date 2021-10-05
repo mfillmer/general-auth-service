@@ -1,3 +1,4 @@
+from werkzeug.security import generate_password_hash
 from app.models import Permission, PermissionOnRole, Role, User
 from app.role import create_role, delete_roles, print_roles, set_default_role, set_permissions_on_role, set_user_role
 import json
@@ -87,8 +88,9 @@ def test_set_permissions_on_role(cli_runner, permissions, roles, context):
             assert perm in role_perms
 
 
-def test_set_role_on_user(cli_runner, permissions, user, roles, context, db):
-    role = Role(name=f'temp role')
+def test_set_role_on_user(cli_runner, user, context, db):
+    role_name = 'temp_role'
+    role = Role(name=role_name)
     permissions = [Permission(name=f'temp {i}') for i in range(5)]
 
     with context:
@@ -104,6 +106,6 @@ def test_set_role_on_user(cli_runner, permissions, user, roles, context, db):
 
         result = cli_runner.invoke(set_user_role, [user.mail, role.name])
 
-        user = db.session.query(User).first()
         assert result.exit_code == 0
-        assert user.role_name == role.name
+        user = User.query.first()
+        assert user.role.name == role_name

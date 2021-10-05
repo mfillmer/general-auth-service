@@ -53,8 +53,8 @@ def user(context, db):
 
 
 @pytest.fixture
-def permissions(client, db):
-    with client.context:
+def permissions(context, db):
+    with context:
         def to_model(index): return Permission(name=f'test {index}')
         permissions = list(map(to_model, range(5)))
         db.session.add_all(permissions)
@@ -64,8 +64,8 @@ def permissions(client, db):
 
 
 @pytest.fixture
-def roles(client, db):
-    with client.context:
+def roles(context, db):
+    with context:
         def to_model(index): return Role(name=f'test {index}', is_default=True)
         roles = list(map(to_model, range(1)))
         db.session.add_all(roles)

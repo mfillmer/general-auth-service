@@ -67,7 +67,7 @@ def set_default_role(role):
 @click.argument('role', required=True)
 @with_appcontext
 def set_user_role(user, role):
-    user = User.query.filter_by(mail=user).first_or_404()
+    user = User.query.filter_by(mail=user).first()
     user.role_name = role
 
     db.session.commit()
