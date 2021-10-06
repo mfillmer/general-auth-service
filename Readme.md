@@ -23,6 +23,4 @@ CLI-Users can:
 - group permissions into roles
 - set roles on user
 
-The Service is protected against CRSF and XSS Attacks by duplicated token authorization
-
 tests only cover user-facing functions like api and cli
