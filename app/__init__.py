@@ -6,6 +6,7 @@ from app.models import db
 from app.util import init_db
 from app import register, verify, login, logout, account
 from flask_jwt_extended import JWTManager
+from flask_cors import CORS
 
 
 def setup_app(app: Flask):
@@ -22,6 +23,9 @@ def init_modules(app: Flask):
     db.init_app(app)
     jwt = JWTManager(app)
     jwt.token_in_blocklist_loader(logout.check_if_token_is_revoked)
+
+    if(app.debug):
+        CORS(app)
 
 
 def setup_cli(app: Flask):
