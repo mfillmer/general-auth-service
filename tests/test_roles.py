@@ -67,7 +67,7 @@ def test_set_default_role(cli_runner, roles, context, user, db):
         new_user = User(mail='tst@com.test', password_hash='asdf')
         db.session.add(new_user)
         db.session.commit()
-        assert new_user.role.name == new_default_role
+        assert  new_default_role in list(map(lambda role: role.name, new_user.roles ))
 
 
 def test_set_permissions_on_role(cli_runner, permissions, roles, context):
@@ -108,4 +108,4 @@ def test_set_role_on_user(cli_runner, user, context, db):
 
         assert result.exit_code == 0
         user = User.query.first()
-        assert user.role.name == role_name
+        assert  role_name  in list(map(lambda role: role.name, user.roles )) 
