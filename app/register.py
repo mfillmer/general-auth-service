@@ -1,8 +1,8 @@
 import re
-from app.models import User, db
+from app.models import User, db, Role, RoleOnUser
 from flask import Blueprint, request
 from werkzeug.security import generate_password_hash
-
+from uuid import uuid4
 bp = Blueprint('register', __name__)
 
 
@@ -29,9 +29,16 @@ def register():
 
     try:
         pw_hash = generate_password_hash(password)
-        user = User(alias=alias, mail=mail, password_hash=pw_hash)
+        user_uuid = str(uuid4())
+        user = User(uuid=user_uuid, alias=alias,
+                    mail=mail, password_hash=pw_hash)
+        default_role = Role.query.filter_by(default=True).first()
+        role_on_user = RoleOnUser(
+            user_uuid=user_uuid, role_name=default_role.name)
         db.session.add(user)
+        db.session.add(role_on_user)
         db.session.commit()
+
     except Exception as e:
         print(e)
         return 'user already exists', 422
