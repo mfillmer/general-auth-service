@@ -5,6 +5,7 @@ import pytest
 import os
 
 from app import create_app, db as db_instance
+from app.util import create_user
 
 
 @pytest.fixture
@@ -45,10 +46,7 @@ def client(app, context, db):
 @pytest.fixture
 def user(context, db):
     with context:
-        user = User(mail='user@test.com',
-                    password_hash=generate_password_hash('test'))
-        db.session.add(user)
-        db.session.commit()
+        user = create_user('user@test.com', 'test', 'test')
         yield user
 
 

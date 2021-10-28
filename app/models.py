@@ -17,8 +17,10 @@ class User(Base):
     password_hash = Column(String(512), nullable=False)
     timestamp = Column(BigInteger, default=lambda: str(int(time()*1000)))
     is_confirmed = Column(Boolean, default=False)
-    roles = relationship('RoleOnUser', uselist=True)
-    permissions = association_proxy('role', 'permission')
+    _roles = relationship('RoleOnUser', uselist=True)
+    roles = association_proxy('_roles', 'role')
+    permissions = association_proxy(
+        '_roles', 'permissions')
 
 
 class RevokedToken(Base):
@@ -27,6 +29,15 @@ class RevokedToken(Base):
 
 class Permission(Base):
     name = Column(String(300), primary_key=True)
+
+
+class RoleOnUser(Base):
+    uuid = Column(String(36), primary_key=True, default=lambda: str(uuid4()))
+
+    role_name = Column(String(300), ForeignKey('role.name'))
+    role = relationship('Role')
+    user_uuid = Column(String(36), ForeignKey('user.uuid'))
+    permissions = association_proxy('role', 'permissions')
 
 
 class Role(Base):
@@ -40,12 +51,6 @@ class Role(Base):
         if default is not None:
             return default.name
         return ''
-
-
-class RoleOnUser(Base):
-    uuid = Column(String(36), primary_key=True, default=lambda: str(uuid4()))
-    role_name = Column(String(300), ForeignKey('role.name'))
-    user_uuid = Column(String(36), ForeignKey('user.uuid'))
 
 
 class PermissionOnRole(Base):

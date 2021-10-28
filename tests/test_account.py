@@ -1,5 +1,4 @@
 import json
-from werkzeug.datastructures import Authorization
 
 
 def test_delete_account_with_token_succeeds(client, token):

@@ -2,6 +2,7 @@ from werkzeug.security import generate_password_hash
 from app.models import Permission, PermissionOnRole, Role, User
 from app.role import create_role, delete_roles, print_roles, set_default_role, set_permissions_on_role, set_user_role
 import json
+from app.util import create_user
 
 
 def test_create_roles(cli_runner, context, roles):
@@ -64,10 +65,10 @@ def test_set_default_role(cli_runner, roles, context, user, db):
         assert default.is_default
         assert len(all_defaults) == 1
 
-        new_user = User(mail='tst@com.test', password_hash='asdf')
-        db.session.add(new_user)
-        db.session.commit()
-        assert  new_default_role in list(map(lambda role: role.name, new_user.roles ))
+        new_user = create_user('tst@com.test', 'test', 'asdf')
+
+        assert new_default_role in list(
+            map(lambda role: role.name, new_user.roles))
 
 
 def test_set_permissions_on_role(cli_runner, permissions, roles, context):
@@ -108,4 +109,4 @@ def test_set_role_on_user(cli_runner, user, context, db):
 
         assert result.exit_code == 0
         user = User.query.first()
-        assert  role_name  in list(map(lambda role: role.name, user.roles )) 
+        assert role_name in list(map(lambda role: role.name, user.roles))
