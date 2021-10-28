@@ -2,18 +2,12 @@ import json
 from werkzeug.security import generate_password_hash
 from flask_jwt_extended import decode_token
 from app.models import User, db
+from uuid import uuid4
 
 
-def test_login(client):
-    PW = 'test'
-    user = User(mail='user@test.com',
-                password_hash=generate_password_hash(PW))
+def test_login(client, permissions, user, db):
 
-    with client.context:
-        db.session.add(user)
-        db.session.commit()
-
-    user_dict = json.dumps(dict(mail=user.mail, password=PW))
+    user_dict = json.dumps(dict(mail=user.mail, password='test'))
 
     non_json_request = client.post('/login', data=user_dict)
     assert non_json_request.status_code == 400
@@ -29,6 +23,8 @@ def test_login(client):
     refresh_token_payload = decode_token(refresh_token)
 
     assert access_token_payload.get('sub') == user.uuid
+    assert access_token_payload.get('permissions') == [
+        f'test {i}' for i in range(5)]
     assert refresh_token_payload.get('sub') == user.uuid
 
     login_not_existing_user = client.post(

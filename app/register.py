@@ -18,6 +18,7 @@ def register():
 
     data = request.json
     mail = data.get('mail')
+    alias = data.get('alias', '')
     password = data.get('password')
 
     if not mail or not password:
@@ -28,7 +29,7 @@ def register():
 
     try:
         pw_hash = generate_password_hash(password)
-        user = User(mail=mail, password_hash=pw_hash)
+        user = User(alias=alias, mail=mail, password_hash=pw_hash)
         db.session.add(user)
         db.session.commit()
     except Exception as e:

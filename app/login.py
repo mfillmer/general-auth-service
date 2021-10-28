@@ -20,10 +20,17 @@ def login():
     if not check_password_hash(user.password_hash, password):
         return 'invalid credentials', 401
 
-    token = create_access_token(user.uuid)
+    token = get_user_access_token(user)
     refresh_token = create_refresh_token(user.uuid)
 
     return jsonify(
         access_token=token,
         refresh_token=refresh_token
     ), 200
+
+
+def get_user_access_token(user: User):
+    permissions = [map(lambda p: p.name, user.permissions)]
+    alias = user.alias
+
+    return create_access_token(user.uuid, additional_claims=dict(permissions=permissions, alias=alias))
