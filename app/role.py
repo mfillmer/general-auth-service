@@ -76,3 +76,15 @@ def set_user_role(user, role):
         pass
 
     db.session.commit()
+
+
+@click.command('unset-user-role')
+@click.argument('user', required=True)
+@click.argument('role', required=True)
+@with_appcontext
+def unset_user_role(user, role):
+    user = User.query.filter_by(mail=user).first()
+
+    RoleOnUser.query.filter_by(user_uuid=user.uuid, role_name=role).delete()
+
+    db.session.commit()
