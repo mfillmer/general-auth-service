@@ -13,7 +13,7 @@ Base = db.Model
 class User(Base):
     uuid = Column(String(36), primary_key=True, default=lambda: str(uuid4()))
     mail = Column(String(300), unique=True, nullable=False)
-    alias = Column(String(300), unique=True)
+    alias = Column(String(300))
     password_hash = Column(String(512), nullable=False)
     timestamp = Column(BigInteger, default=lambda: str(int(time()*1000)))
     is_confirmed = Column(Boolean, default=False)
@@ -41,11 +41,13 @@ class Role(Base):
             return default.name
         return ''
 
+
 class RoleOnUser(Base):
     uuid = Column(String(36), primary_key=True, default=lambda: str(uuid4()))
     role_name = Column(String(300), ForeignKey('role.name'))
     user_uuid = Column(String(36), ForeignKey('user.uuid'))
-    
+
+
 class PermissionOnRole(Base):
     uuid = Column(String(36), primary_key=True, default=lambda: str(uuid4()))
     role = Column(String(300), ForeignKey('role.name'))
