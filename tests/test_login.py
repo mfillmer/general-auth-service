@@ -58,5 +58,5 @@ def test_login_with_permissions(client, permissions, db, context):
     access_token = payload.get('access_token')
     access_token_payload = decode_token(access_token)
 
-    assert access_token_payload.get('permissions') == [
-        f'test {i}' for i in range(5)]
+    assert set(access_token_payload.get('permissions')) == set([
+        f'test {i}' for i in range(5)])

@@ -39,6 +39,8 @@ def setup_cli(app: Flask):
     app.cli.add_command(delete_roles)
     app.cli.add_command(set_permissions_on_role)
     app.cli.add_command(set_default_role)
+    app.cli.add_command(unset_user_role)
+    app.cli.add_command(set_user_role)
 
 
 def create_app():

@@ -34,4 +34,4 @@ def create_user(mail, alias, password):
 
 
 def flatten(t):
-    return [item for sublist in t for item in sublist]
+    return list(set([item for sublist in t for item in sublist]))

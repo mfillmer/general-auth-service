@@ -1,6 +1,6 @@
 from werkzeug.security import generate_password_hash
 from app.models import Permission, PermissionOnRole, Role, User
-from app.role import create_role, delete_roles, print_roles, set_default_role, set_permissions_on_role, set_user_role
+from app.role import create_role, delete_roles, print_roles, set_default_role, set_permissions_on_role, set_user_role, unset_user_role
 import json
 from app.util import create_user
 
@@ -110,3 +110,20 @@ def test_set_role_on_user(cli_runner, user, context, db):
         assert result.exit_code == 0
         user = User.query.first()
         assert role_name in list(map(lambda role: role.name, user.roles))
+
+
+def test_unset_role_on_user(cli_runner, context, db, permissions):
+    with context:
+        default_role = Role(name='stuff', is_default=True)
+        db.session.add(default_role)
+        db.session.commit()
+
+        user = create_user('test@test.test123', 'test', 'test')
+        user_uuid = user.uuid
+        assert len(user.roles) == 1
+
+        cli_runner.invoke(unset_user_role, [user.mail, default_role.name])
+
+        user = User.query.get(user_uuid)
+
+        assert len(user.permissions) == 0
