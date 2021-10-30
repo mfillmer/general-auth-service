@@ -4,7 +4,7 @@ from app.users import print_users
 from flask import Flask
 from app.models import db
 from app.util import init_db
-from app import register, verify, login, logout, account
+from app import register, verify, login, logout, account, refresh
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 
@@ -17,6 +17,7 @@ def setup_app(app: Flask):
     app.register_blueprint(login.bp)
     app.register_blueprint(logout.bp)
     app.register_blueprint(account.bp)
+    app.register_blueprint(refresh.bp)
 
 
 def init_modules(app: Flask):

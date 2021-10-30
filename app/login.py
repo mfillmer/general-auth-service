@@ -1,8 +1,8 @@
 from werkzeug.security import check_password_hash
 from app.models import User
-from app.util import flatten
+from app.util import get_user_access_token
 from flask import Blueprint, jsonify, request
-from flask_jwt_extended import create_access_token, create_refresh_token
+from flask_jwt_extended import create_refresh_token
 
 bp = Blueprint('login', __name__)
 
@@ -28,10 +28,3 @@ def login():
         access_token=token,
         refresh_token=refresh_token
     ), 200
-
-
-def get_user_access_token(user: User):
-    permissions = list(map(lambda p: p.name, flatten(user.permissions)))
-    alias = user.alias
-
-    return create_access_token(user.uuid, additional_claims=dict(permissions=permissions, alias=alias))

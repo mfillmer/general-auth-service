@@ -1,5 +1,6 @@
 import click
 from flask.cli import with_appcontext
+from flask_jwt_extended.utils import create_access_token
 from app.models import db
 from app.models import User, db, Role, RoleOnUser
 from werkzeug.security import generate_password_hash
@@ -35,3 +36,10 @@ def create_user(mail, alias, password):
 
 def flatten(t):
     return list(set([item for sublist in t for item in sublist]))
+
+
+def get_user_access_token(user: User):
+    permissions = list(map(lambda p: p.name, flatten(user.permissions)))
+    alias = user.alias
+
+    return create_access_token(user.uuid, additional_claims=dict(permissions=permissions, alias=alias))
