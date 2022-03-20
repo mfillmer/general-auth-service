@@ -3,6 +3,7 @@ FROM python:3.8-slim-buster
 
 ENV FLASK_APP=/app/app
 EXPOSE 5000
+EXPOSE 4444
 
 # Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE=1
