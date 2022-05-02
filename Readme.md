@@ -3,7 +3,6 @@
 ## Features
 
 API-Users can:
-- register a new account
 - verify their mail with token
 - log into existing accounts
 - refresh their token
@@ -13,6 +12,7 @@ API-Users can:
 
 CLI-Users can:
 - view a report of registered users (json/csv)
+- register a new account
 - create permissions
 - list permissions
 - delete permissions
