@@ -1,6 +1,6 @@
 from app.permissions import create_permissions, delete_permissions, print_permissions
 from app.role import *
-from app.users import print_users
+from app.users import add_user, print_users
 from flask import Flask
 from app.models import db
 from app.util import init_db
@@ -12,7 +12,7 @@ from flask_cors import CORS
 def setup_app(app: Flask):
     app.config.from_pyfile('./config.py')
     app.add_url_rule('/', view_func=lambda: ('ok', 200))
-    app.register_blueprint(register.bp)
+    # app.register_blueprint(register.bp)
     app.register_blueprint(verify.bp)
     app.register_blueprint(login.bp)
     app.register_blueprint(logout.bp)
@@ -32,6 +32,7 @@ def init_modules(app: Flask):
 def setup_cli(app: Flask):
     app.cli.add_command(init_db)
     app.cli.add_command(print_users)
+    app.cli.add_command(add_user)
     app.cli.add_command(create_permissions)
     app.cli.add_command(print_permissions)
     app.cli.add_command(delete_permissions)
