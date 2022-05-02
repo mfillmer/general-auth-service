@@ -1,12 +1,14 @@
+import sqlalchemy
 from app.models import Base, User
-from sqlalchemy import inspect
 from flask.cli import with_appcontext
 import click
 import json
 
+from app.util import create_user
+
 
 def map_model_to_dict(model: Base):
-    inspection = inspect(model)
+    inspection = sqlalchemy.inspect(model)
     columns = [fields.key for fields in inspection.mapper.column_attrs]
 
     return {key: getattr(model, key) for key in columns}
@@ -27,6 +29,19 @@ def map_model_list_to_csv(model_dicts):
     rows = list(map(to_row, model_dicts))
 
     return [header] + list(rows)
+
+
+@click.command('add-user')
+@click.argument('mail')
+@click.argument('password')
+@click.argument('alias', required=False)
+@with_appcontext
+def add_user(mail, password, alias):
+    try:
+        user = create_user(mail, alias or mail, password)
+        print(f'User {user.mail} with alias {user.alias} was added')
+    except sqlalchemy.exc.IntegrityError:
+        print(f'User {mail} already exists')
 
 
 @click.command('print-users')
