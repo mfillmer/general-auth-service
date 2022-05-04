@@ -7,21 +7,21 @@ import json
 @click.command('add-permissions')
 @click.argument('permissions', required=True, nargs=-1)
 @with_appcontext
-def create_permissions(permission):
+def create_permissions(permissions):
     '''Create PERMISSION
 
     PERMISSION may take multiple terms, separated by spaces. Each term will create one permission.
     '''
 
-    for item in permission:
+    for item in permissions:
         db.session.add(Permission(name=item))
 
     db.session.commit()
 
-    if len(permission) == 1:
+    if len(permissions) == 1:
         print('permission created')
     else:
-        print(f'{len(permission)} permissions created')
+        print(f'{len(permissions)} permissions created')
 
 
 @click.command('print-permissions')

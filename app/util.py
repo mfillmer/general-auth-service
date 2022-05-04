@@ -18,6 +18,18 @@ def init_db():
     db.create_all()
 
 
+def update_users_password(mail, password):
+    user = User.query.filter_by(mail=mail).first()
+    pw_hash = generate_password_hash(password)
+    user.password_hash = pw_hash
+    db.session.commit()
+
+
+def delete_user_by_mail(mail):
+    User.query.filter_by(mail=mail).delete()
+    db.session.commit()
+
+
 def create_user(mail, alias, password):
     pw_hash = generate_password_hash(password)
     user_uuid = str(uuid4())

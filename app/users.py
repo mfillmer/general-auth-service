@@ -4,7 +4,7 @@ from flask.cli import with_appcontext
 import click
 import json
 
-from app.util import create_user
+from app.util import create_user, delete_user_by_mail, update_users_password
 
 
 def map_model_to_dict(model: Base):
@@ -43,13 +43,35 @@ def add_user(mail, password, alias):
 
     PASSWORD the users password.
 
-    ALIAS can be provided to be displayed instead of the users mail.
+    ALIAS can be provided to be displayed instead of the users mail. If no value is provided, MAIL will be used as a fallback.
     '''
     try:
         user = create_user(mail, alias or mail, password)
         print(f'User {user.mail} with alias {user.alias} was added')
     except sqlalchemy.exc.IntegrityError:
         print(f'User {mail} already exists')
+
+
+@click.command('delete-user')
+@click.argument('mail')
+@with_appcontext
+def delete_user(mail):
+    '''Delete user with MAIL.'''
+    delete_user_by_mail(mail)
+    print(f'User {mail} was deleted.')
+
+
+@click.command('set-user-password')
+@click.argument('mail')
+@click.argument('password')
+@with_appcontext
+def set_user_password(mail, password):
+    '''Set PASSWORD for USER'''
+    try:
+        update_users_password(mail, password)
+        print(f'Password for user {mail} was updated.')
+    except Exception:
+        print('Error: Password was not set.')
 
 
 @click.command('print-users')

@@ -4,7 +4,7 @@ from flask.cli import with_appcontext
 from app.models import PermissionOnRole, Role, User, db, RoleOnUser
 
 
-@click.command('create-role')
+@click.command('add-roles')
 @click.argument('roles', required=True, nargs=-1)
 @with_appcontext
 def create_role(roles):
@@ -17,14 +17,25 @@ def create_role(roles):
     db.session.add_all(entries)
     db.session.commit()
 
+    if len(roles) == 1:
+        print('role created')
+    else:
+        print(f'{len(roles)} roles created')
+
 
 @click.command('print-roles')
 @click.option('--csv', is_flag=True, default=False, help='print as csv')
+@click.option('--permissions', is_flag=True, default=False, help='show permissions')
 @with_appcontext
-def print_roles(csv):
+def print_roles(csv, permissions):
     '''Print a complete list of existing roles.'''
     roles = Role.query.all()
-    list = [role.name for role in roles]
+
+    if permissions:
+        list = [
+            f'{role.name} -> [{", ".join([p.name for p in role.permissions])}]' for role in roles]
+    else:
+        list = [role.name for role in roles]
 
     if(csv):
         print(*list, sep='\n')
@@ -46,7 +57,7 @@ def delete_roles(roles):
     db.session.commit()
 
 
-@click.command('set-permission-on-role')
+@click.command('set-permissions-on-role')
 @click.argument('role', required=True)
 @click.argument('permissions', required=True, nargs=-1)
 @with_appcontext
@@ -56,6 +67,25 @@ def set_permissions_on_role(role, permissions):
         role=role, perm=permission) for permission in permissions]
     db.session.add_all(perms_on_role)
     db.session.commit()
+    print(f'assigned {len(permissions)} permissions to {role}.')
+
+
+@click.command('unset-permissions-on-role')
+@click.argument('role', required=True)
+@click.argument('permissions', required=True, nargs=-1)
+@with_appcontext
+def unset_permissions_on_role(role, permissions):
+    '''REMOVE PERMISSIONS FROM ROLE.'''
+
+    items = PermissionOnRole.query.filter(
+        PermissionOnRole.role == role).all()
+
+    for item in items:
+        if item.perm in permissions:
+            db.session.delete(item)
+
+    db.session.commit()
+    print(f'removed {len(permissions)} permissions from {role}.')
 
 
 @click.command('set-default-role')

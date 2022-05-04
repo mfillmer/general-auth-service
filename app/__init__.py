@@ -1,6 +1,6 @@
 from app.permissions import create_permissions, delete_permissions, print_permissions
 from app.role import *
-from app.users import add_user, print_users
+from app.users import add_user, delete_user, print_users, set_user_password
 from flask import Flask
 from app.models import db
 from app.util import init_db
@@ -33,6 +33,8 @@ def setup_cli(app: Flask):
     app.cli.add_command(init_db)
     app.cli.add_command(print_users)
     app.cli.add_command(add_user)
+    app.cli.add_command(delete_user)
+    app.cli.add_command(set_user_password)
     app.cli.add_command(create_permissions)
     app.cli.add_command(print_permissions)
     app.cli.add_command(delete_permissions)
@@ -40,6 +42,7 @@ def setup_cli(app: Flask):
     app.cli.add_command(print_roles)
     app.cli.add_command(delete_roles)
     app.cli.add_command(set_permissions_on_role)
+    app.cli.add_command(unset_permissions_on_role)
     app.cli.add_command(set_default_role)
     app.cli.add_command(unset_user_role)
     app.cli.add_command(set_user_role)
