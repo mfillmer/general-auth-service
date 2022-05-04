@@ -19,13 +19,13 @@ def map_model_list_to_json(models):
 
 
 def map_model_to_csv_row(model_dict, keys=[]):
-    return ';'.join([str(model_dict.get(key)) for key in keys])
+    return ','.join([f'"{str(model_dict.get(key))}"' for key in keys])
 
 
 def map_model_list_to_csv(model_dicts):
     cols = ['uuid', 'mail', 'is_confirmed', 'timestamp']
     def to_row(dict): return map_model_to_csv_row(dict, cols)
-    header = ';'.join(cols)
+    header = ','.join([f'"{col}"' for col in cols])
     rows = list(map(to_row, model_dicts))
 
     return [header] + list(rows)
@@ -37,6 +37,14 @@ def map_model_list_to_csv(model_dicts):
 @click.argument('alias', required=False)
 @with_appcontext
 def add_user(mail, password, alias):
+    '''Add USER with PASSWORD and optional ALIAS.
+
+    MAIL is the users mail or another unique identifer.
+
+    PASSWORD the users password.
+
+    ALIAS can be provided to be displayed instead of the users mail.
+    '''
     try:
         user = create_user(mail, alias or mail, password)
         print(f'User {user.mail} with alias {user.alias} was added')
@@ -45,9 +53,10 @@ def add_user(mail, password, alias):
 
 
 @click.command('print-users')
-@click.option('--csv', is_flag=True, default=False)
+@click.option('--csv', is_flag=True, default=False, help='print as csv')
 @with_appcontext
 def print_users(csv):
+    '''Print a complete list of users with all informations.'''
     users = User.query.all()
     user_dicts = map_model_list_to_json(users)
     if csv:

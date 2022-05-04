@@ -4,10 +4,14 @@ import click
 import json
 
 
-@click.command('add-permission')
-@click.argument('permission', required=True, nargs=-1)
+@click.command('add-permissions')
+@click.argument('permissions', required=True, nargs=-1)
 @with_appcontext
 def create_permissions(permission):
+    '''Create PERMISSION
+
+    PERMISSION may take multiple terms, separated by spaces. Each term will create one permission.
+    '''
 
     for item in permission:
         db.session.add(Permission(name=item))
@@ -21,9 +25,10 @@ def create_permissions(permission):
 
 
 @click.command('print-permissions')
-@click.option('--csv', is_flag=True, default=False)
+@click.option('--csv', is_flag=True, default=False, help='print as csv')
 @with_appcontext
 def print_permissions(csv):
+    '''Print a complete list of existing permissions.'''
     permissions = Permission.query.all()
     list = [perm.name for perm in permissions]
 
@@ -33,10 +38,13 @@ def print_permissions(csv):
         print(json.dumps(list))
 
 
-@click.command('delete-permission')
+@click.command('delete-permissions')
 @click.argument('permissions', required=True, nargs=-1)
 @with_appcontext
 def delete_permissions(permissions):
+    '''delete PERMISSIONS
+
+    PERMISSIONS may take multiple terms, separated by spaces. Each term will delete the corresponding permission.'''
     for permission in permissions:
         Permission.query.filter_by(name=permission).delete()
 

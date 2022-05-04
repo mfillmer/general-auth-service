@@ -10,7 +10,7 @@ from uuid import uuid4
 @click.command('init-db')
 @with_appcontext
 def init_db():
-
+    '''Recreate database completly.'''
     print('drop all tables')
     db.drop_all()
 
