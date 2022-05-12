@@ -27,6 +27,9 @@ def init_modules(app: Flask):
 
     if(app.debug):
         CORS(app)
+    else:
+        allowed_origins = app.config.get('ALLOWED_ORIGINS', '').split(' ')
+        CORS(app, origins=allowed_origins)
 
 
 def setup_cli(app: Flask):

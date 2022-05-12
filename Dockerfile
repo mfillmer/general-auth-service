@@ -1,6 +1,11 @@
 # For more information, please refer to https://aka.ms/vscode-docker-python
 FROM python:3.8-slim-buster
 
+ARG SECRET_KEY
+ENV SECRET_KEY $SECRET_KEY
+ARG ALLOWED_ORIGINS
+ENV ALLOWED_ORIGINS $ALLOWED_ORIGINS
+
 ENV FLASK_APP=/app/app
 EXPOSE 5000
 EXPOSE 4444
