@@ -12,7 +12,7 @@ from flask_cors import CORS
 def setup_app(app: Flask):
     app.config.from_pyfile('./config.py')
     app.add_url_rule('/', view_func=lambda: ('ok', 200))
-    # app.register_blueprint(register.bp)
+    app.register_blueprint(register.bp)
     app.register_blueprint(verify.bp)
     app.register_blueprint(login.bp)
     app.register_blueprint(logout.bp)
@@ -25,11 +25,13 @@ def init_modules(app: Flask):
     jwt = JWTManager(app)
     jwt.token_in_blocklist_loader(logout.check_if_token_is_revoked)
 
-    if(app.debug):
+    if (app.debug):
         CORS(app)
     else:
-        allowed_origins = app.config.get('ALLOWED_ORIGINS', '').split(' ')
-        CORS(app, origins=allowed_origins)
+        allowed_origins = app.config.get('ALLOWED_ORIGINS', '')
+
+        if allowed_origins is not None:
+            CORS(app, origins=allowed_origins.split(' '))
 
 
 def setup_cli(app: Flask):
