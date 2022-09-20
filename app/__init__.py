@@ -9,7 +9,7 @@ from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 
 
-def setup_app(app: Flask):
+def setup_routes(app: Flask):
     app.config.from_pyfile('./config.py')
     app.add_url_rule('/', view_func=lambda: ('ok', 200))
     app.register_blueprint(register.bp)
@@ -56,7 +56,7 @@ def setup_cli(app: Flask):
 def create_app():
     app = Flask(__name__)
 
-    setup_app(app)
+    setup_routes(app)
     init_modules(app)
     setup_cli(app)
 
